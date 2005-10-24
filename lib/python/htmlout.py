@@ -370,7 +370,8 @@ class Base(object):
             
         # Warning: ugly kludge to make sure that DIVs and TEXTAREAs are never
         # empty.  Empty DIV tags do funny things to browsers.
-        elif self.cname in ['div', 'textarea', 'table', 'script', 'iframe']:
+        elif (not self.children and
+              self.cname in ['div', 'textarea', 'table', 'script', 'iframe']):
             __element.appendChild( document.createTextNode('') )
 
         for child in self.children:
