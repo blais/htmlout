@@ -3,7 +3,16 @@
 ==================================
 
 .. contents::
-
+..
+    1  Description
+      1.1  Features
+      1.2  History
+    2  Documentation
+    3  Download
+    4  Reporting Bugs
+    5  Installation and Dependencies
+    6  Copyright and License
+    7  Author
 
 Description
 ===========
@@ -11,24 +20,40 @@ Description
 htmlout is a simple library that makes it really easy to build a tree of HTML
 nodes and then to serialize this tree into text for final output.
 
+This library really needs a rewrite, but I have a lot of code using it, and some
+public code in Atocha uses it, so I thought I would open source it anyway.  If
+you need it, here it is.
+
+
+Features
+--------
+
+- Has an option to output a nicely indented output or compressed output;
+- A simple interface;
+
 
 History
-=======
+-------
 
 I have been using and refining this library for years, and although it is long
-due for a rewrite, it still serves me well.
+due for a rewrite, it still serves me well.  It has a fair amount of value, in
+the sense that many issues related to browsers have been ironed out, for
+example, avoiding outputting empty div tags.  Little details like that.
 
 
 Documentation
 =============
 
-There is no documentation, read the source if you need it, or code that uses it.
+There is no documentation, read the source if you need it.
 
 
 Download
 ========
 
-This project is not open sourced at the moment.
+Snapshots of the latest atocha source code can be found in the Download_ area.
+If you make any modification to the source, please update and run the tests.
+
+.. _Download: /downloads/htmlout
 
 
 Reporting Bugs

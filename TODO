@@ -2,5 +2,15 @@
    htmlout: TODO
 ===================
 
+Long-standing things to be done...
+==================================
+
+- The API has to be cleaned up.
+
+- We should consider using the stan interface, in order to be able to put the
+  attributes before an element's contents.
+
+- We should optimize the output by not relying on xml.dom.minidom, which is most
+  likely wasteful and slower that it should be.
 
 
