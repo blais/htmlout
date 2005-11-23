@@ -742,7 +742,7 @@ elems_map = {
  'noframes': ('', elems_inline + elems_block),
 }
 
-__all__ = ['tostring']
+__all__ = ['tostring', 'ReRootVisitor']
 
 def init():
     global elems_map
