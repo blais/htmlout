@@ -171,7 +171,7 @@ def flatten_recursive( s, f=None ):
 
 #-------------------------------------------------------------------------------
 #
-class NicerElement(xml.dom.minidom.Element):
+class _NicerElement(xml.dom.minidom.Element):
     """
     An element that renders nicer than the default minidom element.
     This one supports indentation.
@@ -179,6 +179,48 @@ class NicerElement(xml.dom.minidom.Element):
     Cut-n-pasted, and then modified, from minidom.py, for compact output
     of elements with a single text child.
     """
+
+    def writexml(self, writer, indent="", addindent="", newl=""):
+
+        # indent = current indentation
+        # addindent = indentation to add to higher levels
+        # newl = newline string
+        writer.write(indent+"<" + self.tagName)
+
+        attrs = self._get_attributes()
+        a_names = attrs.keys()
+        a_names.sort()
+
+        for a_name in a_names:
+            writer.write(" %s=\"" % a_name)
+            xml.dom.minidom._write_data(writer, attrs[a_name].value)
+            writer.write("\"")
+        if self.childNodes:
+            if len(self.childNodes) == 1 and\
+                   self.childNodes[0].nodeType == \
+                   xml.dom.minidom.Node.TEXT_NODE:
+                node = self.childNodes[0]
+
+                writer.write(">")
+                node.writexml(writer)
+                writer.write("</%s>%s" % (self.tagName,newl))
+            else:
+                writer.write(">%s"%(newl))
+                for node in self.childNodes:
+                    node.writexml(writer,indent+addindent,addindent,newl)
+                writer.write("%s</%s>%s" % (indent,self.tagName,newl))
+        else:
+            writer.write("/>%s"%(newl))
+
+#-------------------------------------------------------------------------------
+#
+class _VerbatimElement: #(xml.dom.minidom.Element):
+    """
+    An element that renders the given text directly.
+    This is not to be used by clients.
+    """
+    def __init__( self, text ):
+        self.text = text
 
     def writexml(self, writer, indent="", addindent="", newl=""):
 
@@ -255,7 +297,8 @@ class Base(object):
         self.styles = []
 
     def __iadd__( self, children ):
-        return self.append(*children)
+        self.append(*children)
+        return self
 
     def add_class( self, class_ ):
         """
@@ -273,7 +316,6 @@ class Base(object):
 
         FIXME: this does not work with strings yet.
         """
-
         for child in children:
             # Add child element.
             if isinstance(child, Base):
@@ -372,7 +414,7 @@ class Base(object):
         """
         Called to create the tree into an XML tree for output.
         """
-        __element = NicerElement(self.cname)
+        __element = _NicerElement(self.cname)
             
         do_space = False
         if self.text:
@@ -434,6 +476,23 @@ class Base(object):
 
         self.visit(visitor)
         return found and found[0] or None
+
+class VERBATIM(Base, xml.dom.minidom.Element):
+    """
+    Element used to enable plopping some text verbatim within a tree of nodes.
+    """
+    def __init__( self, vtext ):
+        Base.__init__(self)
+        self.vtext = vtext
+
+    # This is a method for xml.dom.minidom.Element printing.
+    def writexml(self, writer, indent="", addindent="", newl=""):
+        writer.write(self.vtext)
+
+    def do_create( self, document ):
+        # Just return this node to be inserted in the minidom tree.
+        return self 
+
 
 #-------------------------------------------------------------------------------
 #
@@ -504,7 +563,7 @@ def get_styles( node ):
     class getstyle:
         def __init__( self ):
             self.styles = []
-        def __call__( self, node ):
+        def __call__( self, node, parent=None ):
             if node.styles:
                 assert type(self.styles) is types.ListType
                 self.styles.extend(node.styles)
@@ -523,7 +582,7 @@ def get_style_tag( node ):
     class getstyle:
         def __init__( self ):
             self.found = None
-        def __call__( self, node ):
+        def __call__( self, node, parent=None ):
             if node.cname == 'style':
                 self.found = node
                 return False
@@ -742,7 +801,7 @@ elems_map = {
  'noframes': ('', elems_inline + elems_block),
 }
 
-__all__ = ['tostring', 'ReRootVisitor']
+__all__ = ['tostring', 'ReRootVisitor', 'VERBATIM']
 
 def init():
     global elems_map
@@ -820,7 +879,7 @@ def test():
         TD('blabla'),
         )))
         )
-
+    
     p1, p2 = P('blabla'), P('bli')
 
     p2.text += 'dhsdhshkds'
@@ -833,6 +892,7 @@ def test():
     doc.append( body )
     doc += (p1, p2)
 
+
     url = 'http://furius.ca'
     doc.append(
         DIV( {'name': 'value'},
@@ -841,6 +901,12 @@ def test():
                A(url, href=url), """more text.""")
              )
         )
+
+    doc.append(
+        DIV( VERBATIM("""Some verbatim
+        text in multipl>
+        lines with >>>>> embedded in them.
+        """)))
 
     sys.stdout.write(tostring(doc, doctype=1, ctnttype=1, styles=1))
 
