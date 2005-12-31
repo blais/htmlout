@@ -116,19 +116,12 @@ __release__ = "0.1"
 __version__ = "$Revision$"
 __author__ = "Martin Blais <blais@furius.ca>"
 
-#===============================================================================
-# EXTERNAL DECLARATIONS
-#===============================================================================
-
 import sys
 
 from elementtree.ElementTree import _Element, ElementTree
 import types
 import elementtree_helpers
 
-#===============================================================================
-# PUBLIC DECLARATIONS
-#===============================================================================
 
 class Base(_Element, object):
 
