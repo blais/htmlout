@@ -117,10 +117,10 @@ __version__ = "$Revision$"
 __author__ = "Martin Blais <blais@furius.ca>"
 
 import sys
+import types
 
 from elementtree.ElementTree import _Element, ElementTree
-import types
-import elementtree_helpers
+from elementtree_pretty import write_pretty
 
 
 class Base(_Element, object):
@@ -405,7 +405,8 @@ def test():
     doc += body
     doc += (p1, p2)
 
-    ElementTree(doc).write_fmt(sys.stdout)
+    tree = ElementTree(doc)
+    write_pretty(tree, sys.stdout)
 
 if __name__ == "__main__":
     test()
