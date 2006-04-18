@@ -2,6 +2,13 @@
    htmlout: TODO
 ===================
 
+Template Class
+==============
+
+* A nice base template class that generates a HEAD, allows you to set the title,
+  etc. should be provided here.
+
+
 Long-standing things to be done...
 ==================================
 
