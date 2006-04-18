@@ -2,6 +2,12 @@
    htmlout: TODO
 ===================
 
+Post-Processing
+===============
+
+* We should implement a visitor that applies the Ranvier URLMapper to href, src
+  attributes.
+
 Template Class
 ==============
 
@@ -19,5 +25,4 @@ Long-standing things to be done...
 
 - We should optimize the output by not relying on xml.dom.minidom, which is most
   likely wasteful and slower that it should be.
-
 
