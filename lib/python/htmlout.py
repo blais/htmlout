@@ -204,6 +204,19 @@ class _NicerElement(xml.dom.minidom.Element):
         else:
             writer.write("/>%s"%(newl))
 
+
+#-------------------------------------------------------------------------------
+#
+class _NoopElement(xml.dom.minidom.Element):
+    """
+    An element that renders only its children and not itself.  All attributes
+    set on it will be ignored.
+    """
+
+    def writexml(self, writer, indent="", addindent="", newl=""):
+        for node in self.childNodes:
+            node.writexml(writer,indent,addindent,newl)
+
 #-------------------------------------------------------------------------------
 #
 class _VerbatimElement: #(xml.dom.minidom.Element):
@@ -296,6 +309,8 @@ class Base(object):
         """
         Add a class to this element.
         """
+        # Note: we should make this a list and append, and at render time do
+        # something special rather than concatenate strings here.
         try:
             val = self.attrib['class']
             self.attrib['class'] += ' ' + class_
@@ -305,7 +320,6 @@ class Base(object):
     def insert( self, idx, *children ):
         """
         Insert children.
-
         FIXME: this does not work with strings yet.
         """
         for child in children:
@@ -406,7 +420,10 @@ class Base(object):
         """
         Called to create the tree into an XML tree for output.
         """
-        __element = _NicerElement(self.cname)
+        if self.cname == 'noop':
+            __element = _NoopElement(self.cname)
+        else:
+            __element = _NicerElement(self.cname)
             
         do_space = False
         if self.text:
@@ -791,6 +808,7 @@ elems_map = {
  'frameset': ['frameset', 'frame', 'noframes'],
  'frame': [],
  'noframes': ('', elems_inline + elems_block),
+ 'noop': [],
 }
 
 __all__ = ['tostring', 'ReRootVisitor', 'VERBATIM']
@@ -862,16 +880,20 @@ def test():
              STYLE()
         ) )
 
-    table = TABLE(blabla='somevlue')
     body = BODY(
-        table.append(TBODY('ahasa',
-        TR(
-        TD('blabla'),
-        TD('blabla'),
-        TD('blabla'),
-        )))
-        )
+               TABLE(
+                   TBODY('ahasa',
+                       TR(
+                           TD('blabla'),
+                           TD('blabla'),
+                           TD('blabla'),
+                           )
+                         ),
+                   blabla='somevlue')
+               )
     
+    body.append( NOOP(P("YEAH"), DIV("prout")), NOOP("proutprout"), NOOP() )
+
     p1, p2 = P('blabla'), P('bli')
 
     p2.text += 'dhsdhshkds'
