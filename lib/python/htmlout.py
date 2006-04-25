@@ -138,7 +138,6 @@ Future TODO
 """
 
 # stdlib imports
-import os.path
 import xml.dom.minidom
 import types
 
@@ -492,6 +491,7 @@ class VERBATIM(Base, xml.dom.minidom.Element):
     """
     def __init__( self, vtext ):
         Base.__init__(self)
+        xml.dom.minidom.Element.__init__(self)        
         self.vtext = vtext
 
     # This is a method for xml.dom.minidom.Element printing.
@@ -814,7 +814,6 @@ elems_map = {
 __all__ = ['tostring', 'ReRootVisitor', 'VERBATIM']
 
 def init():
-    global elems_map
     for k, v in elems_map.iteritems():
         n = k.upper()
         newclass = type(n, (Base,), {})
