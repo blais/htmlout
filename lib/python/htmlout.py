@@ -491,7 +491,7 @@ class VERBATIM(Base, xml.dom.minidom.Element):
     """
     def __init__( self, vtext ):
         Base.__init__(self)
-        xml.dom.minidom.Element.__init__(self)        
+        xml.dom.minidom.Element.__init__(self, '')
         self.vtext = vtext
 
     # This is a method for xml.dom.minidom.Element printing.
