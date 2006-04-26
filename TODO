@@ -5,6 +5,10 @@
 Post-Processing
 ===============
 
+* Make the 'class' attribute special, a list, that only gets joined at render
+  time. Disallow changing the 'class' attribute via the usual method.  Port all
+  code.
+
 * We should implement a visitor that applies the Ranvier URLMapper to href, src
   attributes.
 
