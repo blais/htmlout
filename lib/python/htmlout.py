@@ -394,7 +394,7 @@ class Base(object):
                 self.children.append(child)
 
             # Add string.
-            elif type(child) in [type(''), type(u'')]:
+            elif isinstance(child, (str, unicode)):
                 ##print >> sys.stderr, "STRING"
                 if not self.children:
                     if not self.text: self.text = ''
@@ -407,9 +407,10 @@ class Base(object):
             # Add attributes in map.
             # This can be useful when there are children put
             # the attributes before the children.
-            elif isinstance(child, types.DictionaryType):
+            elif isinstance(child, dict):
                 ##print >> sys.stderr, "DICT"
                 self.attrib.update(child)
+
             else:
                 assert child is None
 
