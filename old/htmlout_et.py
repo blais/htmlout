@@ -127,20 +127,20 @@ class Base(_Element, object):
 
     subelems = None
 
-    def __init__( self, *children, **attribs ):
+    def __init__(self, *children, **attribs):
         self.cname = self.__class__.__name__.lower()
         _Element.__init__(self, self.cname, {})
 
         self.append(*children, **attribs)
 
-    def __iadd__( self, *children ):
+    def __iadd__(self, *children):
         # Deal with tuples, to allow el += (c1, c2, c3, ...)
         if len(children) == 1 and type(children[0]) is types.TupleType:
             return self.append(*children[0])
         else:
             return self.append(*children)
 
-    def append( self, *children, **attribs ):
+    def append(self, *children, **attribs):
         #
         # Add attributes.
         #
@@ -209,7 +209,7 @@ class Base(_Element, object):
 
         return self
 
-    def append_raw( self, element ):
+    def append_raw(self, element):
         _Element.append(self, element)
 
 # Validation code (not needed for now).
@@ -232,7 +232,7 @@ class Base(_Element, object):
 
 ## class Document(xml.dom.minidom.Document):
 
-##     def __init__( self, check_subelems=True, transitional=False ):
+##     def __init__(self, check_subelems=True, transitional=False):
 ##         self.check_subelems = check_subelems
 ##         self.transitional = transitional
 

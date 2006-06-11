@@ -62,7 +62,7 @@ class Base(NicerElement, object):
 
     subelems = None
 
-    def __init__( self, parent=None, text=None, doco=None, *args, **kwds ):
+    def __init__(self, parent=None, text=None, doco=None, *args, **kwds):
         self.cname = self.__class__.__name__.lower()
         xml.dom.minidom.Element.__init__(self, self.cname)
         if doco:
@@ -83,7 +83,7 @@ class Base(NicerElement, object):
         if text != None:
             self.appendChild( self.doco.createTextNode(str(text)) )
 
-    def add( self, child ):
+    def add(self, child):
 
         if self.doco.check_subelems:
             subelems = self.subelems_strict
@@ -101,13 +101,13 @@ class Base(NicerElement, object):
         self.appendChild( child )
         return child
 
-    def addtext( self, text ):
+    def addtext(self, text):
         if text != None:
             self.appendChild( self.doco.createTextNode(str(text)) )
 
 class Document(xml.dom.minidom.Document):
 
-    def __init__( self, check_subelems=True, transitional=False ):
+    def __init__(self, check_subelems=True, transitional=False):
         self.check_subelems = check_subelems
         self.transitional = transitional
 

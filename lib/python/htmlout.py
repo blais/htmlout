@@ -147,7 +147,7 @@ warnings.filterwarnings("ignore", category=FutureWarning, append=1)
 
 #-------------------------------------------------------------------------------
 #
-def flatten_recursive( s, f=None ):
+def flatten_recursive(s, f=None):
     """
     Flattens a recursive structure of lists and tuples into a simple list.
     """
@@ -223,7 +223,7 @@ class _VerbatimElement: #(xml.dom.minidom.Element):
     An element that renders the given text directly.
     This is not to be used by clients.
     """
-    def __init__( self, text ):
+    def __init__(self, text):
         self.text = text
 
     def writexml(self, writer, indent="", addindent="", newl=""):
@@ -266,7 +266,7 @@ class Document(xml.dom.minidom.Document):
     quiet.
     """
 
-    def __init__( self, check_subelems=True, transitional=False ):
+    def __init__(self, check_subelems=True, transitional=False):
         xml.dom.minidom.Document.__init__(self)
         self.check_subelems = check_subelems
         self.transitional = transitional
@@ -290,7 +290,7 @@ class Base(object):
 
     subelems = None
 
-    def __init__( self, *children, **attribs ):
+    def __init__(self, *children, **attribs):
         self.cname = self.__class__.__name__.lower()
         self.children, self.text, self.tail, self.attrib = [], '', '', {}
         self.append(*children, **attribs)
@@ -300,11 +300,11 @@ class Base(object):
         # lot of fun.  See tostring() for more details.
         self.styles = []
 
-    def __iadd__( self, children ):
+    def __iadd__(self, children):
         self.append(*children)
         return self
 
-    def add_class( self, class_ ):
+    def add_class(self, class_):
         """
         Add a class to this element.
         """
@@ -316,7 +316,7 @@ class Base(object):
         except KeyError:
             self.attrib['class'] = class_
         
-    def insert( self, idx, *children ):
+    def insert(self, idx, *children):
         """
         Insert children.
         FIXME: this does not work with strings yet.
@@ -333,7 +333,7 @@ class Base(object):
 
         return self
 
-    def append( self, *children, **attribs ):
+    def append(self, *children, **attribs):
         """
         Add children and/or attributes.
         """
@@ -416,7 +416,7 @@ class Base(object):
 
         return newchildren
 
-    def do_create( self, document ):
+    def do_create(self, document):
         """
         Called to create the tree into an XML tree for output.
         """
@@ -456,7 +456,7 @@ class Base(object):
 
         return __element
 
-    def visit( self, visitor, parent=None ):
+    def visit(self, visitor, parent=None):
         """
         Generic visitor pattern.
         """
@@ -469,7 +469,7 @@ class Base(object):
         else:
             return False
 
-    def findattr( self, **kwds ):
+    def findattr(self, **kwds):
         """
         Find an element by id under the given node.
         """
@@ -477,7 +477,7 @@ class Base(object):
         aname, avalue = kwds.items()[0]
 
         found = []
-        def visitor( node, parent ):
+        def visitor(node, parent):
             if aname in node.attrib and node.attrib[aname] == avalue:
                 found.append(node)
                 return False
@@ -490,7 +490,7 @@ class VERBATIM(Base, xml.dom.minidom.Element):
     """
     Element used to enable plopping some text verbatim within a tree of nodes.
     """
-    def __init__( self, vtext ):
+    def __init__(self, vtext):
         Base.__init__(self)
         xml.dom.minidom.Element.__init__(self, '')
         self.vtext = vtext
@@ -499,7 +499,7 @@ class VERBATIM(Base, xml.dom.minidom.Element):
     def writexml(self, writer, indent="", addindent="", newl=""):
         writer.write(self.vtext)
 
-    def do_create( self, document ):
+    def do_create(self, document):
         # Just return this node to be inserted in the minidom tree.
         return self 
 
@@ -509,10 +509,10 @@ class VERBATIM(Base, xml.dom.minidom.Element):
 # Also available to scripts.
 content_type = "Content-type: text/html\n"
 
-def tostring( root, indent='   ',
-              check_subelems=True,
-              ctnttype=False, doctype=False, xmldecl=None, encoding=None,
-              styles=False, pretty=True ):
+def tostring(root, indent='   ',
+             check_subelems=True,
+             ctnttype=False, doctype=False, xmldecl=None, encoding=None,
+             styles=False, pretty=True):
     """
     Render tag tree into a string of text.
     """
@@ -564,16 +564,16 @@ def tostring( root, indent='   ',
 
 #-------------------------------------------------------------------------------
 #
-def get_styles( node ):
+def get_styles(node):
     """
     Fetch all the style tags of all the nodes in the tree, and return a list of
     them.
     """
 
     class getstyle:
-        def __init__( self ):
+        def __init__(self):
             self.styles = []
-        def __call__( self, node, parent=None ):
+        def __call__(self, node, parent=None):
             if node.styles:
                 assert type(self.styles) is types.ListType
                 self.styles.extend(node.styles)
@@ -584,15 +584,15 @@ def get_styles( node ):
 
 #-------------------------------------------------------------------------------
 #
-def get_style_tag( node ):
+def get_style_tag(node):
     """
     Look for the first <style> tag in the tree and return it.
     """
 
     class getstyle:
-        def __init__( self ):
+        def __init__(self):
             self.found = None
-        def __call__( self, node, parent=None ):
+        def __call__(self, node, parent=None):
             if node.cname == 'style':
                 self.found = node
                 return False
@@ -604,7 +604,7 @@ def get_style_tag( node ):
 
 #-------------------------------------------------------------------------------
 #
-def get_inputs( node ):
+def get_inputs(node):
     """
     Generator that visits all the INPUTs in the tree.
     """
@@ -635,7 +635,7 @@ def ischecked(value, ref=None):
 
 #-------------------------------------------------------------------------------
 #
-def replace_input_values( rtree, values ):
+def replace_input_values(rtree, values):
     """
     Replace the values of INPUT tags in the tree by the values given in the
     'values' mapping, if they are present in it.
@@ -845,12 +845,12 @@ class ReRootVisitor:
                   LINK: 'href',
                   IMG: 'src'}
 
-    def __init__( self, root ):
+    def __init__(self, root):
         assert root.startswith('/')
         assert not root.endswith('/')
         self.root = root
 
-    def __call__( self, el, parent ):
+    def __call__(self, el, parent):
         typel = type(el)
         if typel in (A, IMG, LINK):
             aname = self._attribmap[typel]
