@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #
 # $Source: /home/blais/repos/cvsroot/conf/common/lib/python/htmlout_old.py,v $
 # $Id$
@@ -251,9 +250,6 @@ for k, v in elems_map.iteritems():
     globals()[n] = newclass
 
 
-#===============================================================================
-# TEST
-#===============================================================================
 
 def test():
     import sys

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 #
 #  htmlout -- A simple HTML output library.
 #  Copyright (C) 2005  Martin Blais
@@ -145,8 +144,7 @@ import warnings;
 warnings.filterwarnings("ignore", category=FutureWarning, append=1)
 
 
-#-------------------------------------------------------------------------------
-#
+
 def flatten_recursive(s, f=None):
     """
     Flattens a recursive structure of lists and tuples into a simple list.
@@ -160,8 +158,7 @@ def flatten_recursive(s, f=None):
             f.append(c)
     return f
 
-#-------------------------------------------------------------------------------
-#
+
 class _NicerElement(xml.dom.minidom.Element):
     """
     An element that renders nicer than the default minidom element.
@@ -204,8 +201,7 @@ class _NicerElement(xml.dom.minidom.Element):
             writer.write("/>%s"%(newl))
 
 
-#-------------------------------------------------------------------------------
-#
+
 class _NoopElement(xml.dom.minidom.Element):
     """
     An element that renders only its children and not itself.  All attributes
@@ -216,8 +212,7 @@ class _NoopElement(xml.dom.minidom.Element):
         for node in self.childNodes:
             node.writexml(writer,indent,addindent,newl)
 
-#-------------------------------------------------------------------------------
-#
+
 class _VerbatimElement: #(xml.dom.minidom.Element):
     """
     An element that renders the given text directly.
@@ -258,8 +253,7 @@ class _VerbatimElement: #(xml.dom.minidom.Element):
         else:
             writer.write("/>%s"%(newl))
 
-#-------------------------------------------------------------------------------
-#
+
 class Document(xml.dom.minidom.Document):
     """
     Document class.  Just to store some extra options and make pychecker more
@@ -281,8 +275,7 @@ class Document(xml.dom.minidom.Document):
         return # "For minidom's DocumentLS spec"
 
 
-#-------------------------------------------------------------------------------
-#
+
 class Base(object):
     """
     Our element types.
@@ -505,8 +498,7 @@ class VERBATIM(Base, xml.dom.minidom.Element):
         return self 
 
 
-#-------------------------------------------------------------------------------
-#
+
 # Also available to scripts.
 content_type = "Content-type: text/html\n"
 
@@ -563,8 +555,7 @@ def tostring(root, indent='   ',
     else:
         return top + xroot.toxml(encoding=encoding)
 
-#-------------------------------------------------------------------------------
-#
+
 def get_styles(node):
     """
     Fetch all the style tags of all the nodes in the tree, and return a list of
@@ -583,8 +574,7 @@ def get_styles(node):
     node.visit(gs)
     return gs.styles
 
-#-------------------------------------------------------------------------------
-#
+
 def get_style_tag(node):
     """
     Look for the first <style> tag in the tree and return it.
@@ -603,8 +593,7 @@ def get_style_tag(node):
     return gs.found
 
 
-#-------------------------------------------------------------------------------
-#
+
 def get_inputs(node):
     """
     Generator that visits all the INPUTs in the tree.
@@ -616,8 +605,7 @@ def get_inputs(node):
         l.extend(get_inputs(child))
     return l
 
-#-------------------------------------------------------------------------------
-#
+
 def ischecked(value, ref=None):
     """
     Return the string 'checked' if VALUE is true.
@@ -634,8 +622,7 @@ def ischecked(value, ref=None):
                 return 'checked'
     return ''
 
-#-------------------------------------------------------------------------------
-#
+
 def replace_input_values(rtree, values):
     """
     Replace the values of INPUT tags in the tree by the values given in the
@@ -831,8 +818,7 @@ def init():
 
 init()
 
-#-------------------------------------------------------------------------------
-#
+
 class ReRootVisitor:
     """
     A visitor for an htmlout tree that will prepend a URL path to all A or IMG
@@ -867,9 +853,6 @@ class ReRootVisitor:
         return True
 
 
-#===============================================================================
-# TEST
-#===============================================================================
 
 def test():
     # just to make pychecker shut up
