@@ -330,7 +330,6 @@ class Base(object):
         """
         Add children and/or attributes.
         """
-
         if attribs:
             ##print >> sys.stderr, attribs
             # Treat class attribute specially.
@@ -408,6 +407,9 @@ class Base(object):
                 assert child is None
 
         return newchildren
+
+    def extend(self, children):
+        return self.append(*children)
 
     def do_create(self, document):
         """
