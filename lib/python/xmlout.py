@@ -108,8 +108,21 @@ def indent(elem, level=0):
 
 
 
-from htmlnodes import init
+def init(cls):
+    allnames = """
+     html head body frameset base isindex link meta script style title address
+     blockquote center del div h1 h2 h3 h4 h5 h6 hr ins isindex noscript p pre dir
+     dl dt dd li menu ol ul table caption colgroup col thead tfoot tbody tr td th
+     form button fieldset legend input label select optgroup option textarea a
+     applet basefont bdo br font iframe img map area bject param q script span sub
+     sup abbr acronym cite code del dfn em ins kbd samp strong var b big i s small
+     strike tt u frameset frame noframes noop
+    """
+    clsdict = {}
+    for k in map(str.strip, allnames.split()):
+        clsdict[k.upper()] = type(k, (cls,), {})
+    return clsdict
+
 clsdict = init(Base)
 __all__ = ['tostring'] + clsdict.keys()
 globals().update(clsdict)
-
