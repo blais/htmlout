@@ -6,10 +6,13 @@ This module adds some niceties from the htmlout module to the tree serialization
 capabilities of ElementTree, and is much more efficient than htmlout.
 """
 
+# stdlib imports
+import types
+
 # elementtree/lxml imports
 ## from lxml import etree
 ## from lxml.etree import Element
-from elementtree.ElementTree import Element, ElementTree
+from elementtree.ElementTree import Element, ElementTree, iselement
 
 
 class Base(Element):
@@ -20,13 +23,7 @@ class Base(Element):
             attribs = translate_attribs(attribs)
         Element.__init__(self, self.__class__.__name__.lower(), attribs)
 
-        for child in children:
-            if isinstance(child, (str, unicode)):
-                if self.text is None:
-                    self.text = ""
-                self.text = child
-            else:
-                self.append(child)
+        self.extend(children)
 
     def add(self, *children):
         return self.extend(children)
@@ -34,24 +31,37 @@ class Base(Element):
     def extend(self, children):
         "A more flexible version of extend."
     
-        for child in children:
-            # Add child element.
-            if isinstance(child, Base):
-                self.append(child)
+        children = flatten_recursive(children)
+        if children:
+            for child in children:
+                # Add child element.
+                if isinstance(child, Base):
+                    assert iselement(child), child
+                    self.append(child)
 
-            # Add string.
-            elif isinstance(child, (str, unicode)):
-                if not self._children:
-                    if not self.text: self.text = ''
-                    self.text += child
-                else:
-                    lchild = self._children[-1]
-                    if not lchild.tail: lchild.tail = ''
-                    lchild.tail += child
+                # Add string.
+                elif isinstance(child, (str, unicode)):
+                    if not self._children:
+                        if not self.text: self.text = ''
+                        self.text += child
+                    else:
+                        lchild = self._children[-1]
+                        if not lchild.tail: lchild.tail = ''
+                        lchild.tail += child
 
-        return child # Return the last child.
+            return child # Return the last child.
 
 
+def flatten_recursive(s, f=None):
+    """ Flattens a recursive structure of lists and tuples into a simple list."""
+    if f is None:
+        f = []
+    for c in s:
+        if isinstance(c, types.ListType) or isinstance(c, types.TupleType):
+            flatten_recursive(c, f)
+        else:
+            f.append(c)
+    return f
 
 
 _attribute_trans_tbl = {
@@ -95,24 +105,6 @@ def indent(elem, level=0):
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
-
-
-## def indent(elem, level=0):
-##     i = "\n" + level*"  "
-##     if len(elem):
-##         if not elem.text or not elem.text.strip():
-##             elem.text = i + "  "
-##         for e in elem:
-##             indent(e, level+1)
-##             if not e.tail or not e.tail.strip():
-##                 e.tail = i + "  "
-##         if not e.tail or not e.tail.strip():
-##             e.tail = i
-##     else:
-##         if level and (not elem.tail or not elem.tail.strip()):
-##             elem.tail = i
-
-
 
 
 
