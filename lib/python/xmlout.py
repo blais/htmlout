@@ -8,11 +8,14 @@ capabilities of ElementTree, and is much more efficient than htmlout.
 
 # stdlib imports
 import types
+from StringIO import StringIO
 
 # elementtree/lxml imports
 ## from lxml import etree
 ## from lxml.etree import Element
 from elementtree.ElementTree import Element, ElementTree, iselement
+from elementtree.ElementTree import _serialize_xml
+from elementtree import ElementTree as ElementTreeModule 
 
 
 class Base(Element):
@@ -86,12 +89,15 @@ def translate_attribs(attribs):
     return dict((_attribute_translate(k, k), v) for k, v in attribs.iteritems())
 
 def tostring(node, *args, **kwds):
-    indent(node)
+    if 'pretty' in kwds or 'pretty_print' in kwds:
+        indent(node)
     return ElementTree(node).write(*args, **kwds)
 
 # From: http://effbot.org/zone/element-lib.htm#prettyprint
 # indent: Adds whitespace to the tree, so that saving it as usual results in a
 # prettyprinted tree.
+#
+# FIXME: This is not going to work if we're sharing nodes (if we have a DAG).
 def indent(elem, level=0):
     "in-place prettyprint formatter"
     i = "\n" + level*"  "
@@ -126,3 +132,27 @@ def init(cls):
 clsdict = init(Base)
 __all__ = ['tostring'] + clsdict.keys()
 globals().update(clsdict)
+
+
+
+
+"""
+Implement caching of render results by monkey-patching the serialize functions
+from the ElementTree module.
+"""
+
+def _serialize_xml_cached(write, elem, encoding, qnames, namespaces):
+    if hasattr(elem, 'cache'):
+        rendered = elem.cache
+        if not isinstance(rendered, (str, unicode)):
+            sio = StringIO()
+            _serialize_xml(sio.write, elem, encoding, qnames, namespaces)
+            rendered = sio.getvalue()
+            elem.cache = rendered
+        else:
+            rendered = '<!-- cached -->' + rendered
+        write(rendered)
+    else:
+        _serialize_xml(write, elem, encoding, qnames, namespaces)
+
+ElementTreeModule._serialize_xml = _serialize_xml_cached
