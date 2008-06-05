@@ -33,7 +33,7 @@ class Base(Element):
 
     def extend(self, children):
         "A more flexible version of extend."
-    
+
         children = flatten_recursive(children)
         if children:
             for child in children:
@@ -41,16 +41,21 @@ class Base(Element):
                 if isinstance(child, Base):
                     assert iselement(child), child
                     self.append(child)
-
+                    
                 # Add string.
                 elif isinstance(child, (str, unicode)):
                     if not self._children:
-                        if not self.text: self.text = ''
+                        if not self.text:
+                            self.text = ''
                         self.text += child
                     else:
                         lchild = self._children[-1]
-                        if not lchild.tail: lchild.tail = ''
+                        if not lchild.tail:
+                            lchild.tail = ''
                         lchild.tail += child
+
+                else:
+                    raise ValueError("Invalid child type: %s" % type(child))
 
             return child # Return the last child.
 
