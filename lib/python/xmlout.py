@@ -96,7 +96,11 @@ def translate_attribs(attribs):
 def tostring(node, *args, **kwds):
     if 'pretty' in kwds or 'pretty_print' in kwds:
         indent(node)
-    return ElementTree(node).write(*args, **kwds)
+        kwds.pop('pretty', None)
+        kwds.pop('pretty_print', None)
+    oss = StringIO()
+    ElementTree(node).write(oss, *args, **kwds)
+    return oss.getvalue()
 
 # From: http://effbot.org/zone/element-lib.htm#prettyprint
 # indent: Adds whitespace to the tree, so that saving it as usual results in a
