@@ -50,10 +50,11 @@ There is no documentation, read the source if you need it.
 Download
 ========
 
-Snapshots of the latest atocha source code can be found in the Download_ area.
-If you make any modification to the source, please update and run the tests.
+A Mercurial repository can be found at:
 
-.. _Download: /downloads/htmlout
+  https://hg.furius.ca/public/htmlout/
+
+`Click here for download instructions. </web-furius/downloading.html>`_
 
 
 Reporting Bugs
