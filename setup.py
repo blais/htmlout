@@ -44,6 +44,7 @@ nodes and then to serialize this tree into text for final output.
       author="Martin Blais",
       author_email="blais@furius.ca",
       url="http://furius.ca/htmlout",
+      download_url="http://bitbucket.org/blais/htmlout",
       package_dir = {'': 'lib/python'},
       py_modules = ['htmlout'],
      )
